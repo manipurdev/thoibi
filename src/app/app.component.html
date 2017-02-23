@@ -222,9 +222,9 @@
     <div class="header">
         <header>
             {{_username}} Gi Pendaba Fongdokfam! 👩🏻 🤦‍ 🙋‍
-            <div class="subtitle" (click)="signin(); ">{{_isAuthenticated? "Logout 😡": "Login 😉"}}</div>
+            <div class="subtitle" (click)="signin(); "><b>{{_isAuthenticated? "Logout 😡": "Login 😉"}}</b> <span *ngIf="!_isAuthenticated"><i>&nbsp;Sign in to make posts</i></span></div>
         </header>
-        <button (click)="toggleNewComplaint()" class="add">+</button>
+        <button (click)="toggleNewComplaint()" class="add" *ngIf="_isAuthenticated">+</button>
     </div>
     <div class="modal" *ngIf="_ifNewComplaint && _isAuthenticated">
         <div class="bubble cinput" style="width: 30em; padding: 1em .5em;">
@@ -255,7 +255,7 @@
                 </div>
                 <div *ngIf="i === msgindex" class="section-comment">
                     <hr>
-                    <input type="text" #newcomment placeholder="Type your comment..." (keyup.enter)="addComment(msg.$key, newcomment.value, msg.comment_count); newcomment.value=''">
+                    <input *ngIf="_isAuthenticated" type="text" #newcomment placeholder="Type your comment..." (keyup.enter)="addComment(msg.$key, newcomment.value, msg.comment_count); newcomment.value=''">
                     <ul class="comments">
                         <li *ngFor="let comment of comments | async">
                             <p><span class="owner"><small>{{comment.user?.displayName}}</small></span> {{comment.comment}}</p>

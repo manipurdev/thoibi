@@ -43,8 +43,8 @@ export class AppComponent implements OnInit {
   loadComplaints() {
     this._hasData = false;
     this.messages = this.af.database.list('people/thoibi');
-    this.messages.subscribe((values)=>{
-      if(values)
+    this.messages.subscribe((values) => {
+      if (values)
         this._hasData = true;
     })
     // this.af.database.list('people/thoibi').forEach((value)=>{
@@ -118,9 +118,9 @@ export class AppComponent implements OnInit {
     // console.log(index);
     this.msgindex = index;
     this.comments = this.af.database.list('people/thoibi/' + key + '/comments')
-    this.comments.subscribe((values)=>{
-      console.log(values);
-    })
+    // this.comments.subscribe((values) => {
+    //   console.log(values);
+    // })
   }
   addComment(key, text: string, lastCount: number) {
     // console.log(text);
@@ -136,6 +136,8 @@ export class AppComponent implements OnInit {
     // database().ref('/people/thoibi/' + key).child('comments').push(comment)
   }
   fav(key, lastval: number) {
+    if (!this._isAuthenticated)
+      return
     // console.log(i);
     // this.messages[i].like_count += 1;
     // console.log(this.messages[i].like_count);
