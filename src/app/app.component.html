@@ -145,6 +145,7 @@
     .close {
         border: none;
         background: none;
+        cursor: pointer;
     }
     
     .fav {
@@ -213,7 +214,7 @@
             <button (click)="toggleNewComplaint()" class="close">Cancel</button>
         </div>
     </div>
-    <div class="modal" *ngIf="!_isAuthenticated">
+    <div class="modal" *ngIf="!_isAuthenticated && false">
         <div class="modal-content" style="margin: auto">
             <h1 (click)="signin()" style="cursor: pointer"> ✊🏼 Login to continue</h1>
         </div>
@@ -223,47 +224,46 @@
             {{_username}} Gi Pendaba Fongdokfam! 👩🏻 🤦‍ 🙋‍
             <div class="subtitle" (click)="signin(); ">{{_isAuthenticated? "Logout 😡": "Login 😉"}}</div>
         </header>
-        <button (click)="toggleNewComplaint()" class="add" *ngIf="_isAuthenticated">+</button>
+        <button (click)="toggleNewComplaint()" class="add">+</button>
     </div>
     <div class="modal" *ngIf="_ifNewComplaint && _isAuthenticated">
         <div class="bubble cinput" style="width: 30em; padding: 1em .5em;">
             <input style="width: 100%; height: 3em;" type="text" #newcomplaint placeholder="Type your complaint..." (keyup.enter)="addComplaint(newcomplaint.value); newcomplaint.value=''">
             <button (click)="toggleNewComplaint()" class="close">Cancel</button>
+            <button (click)="addComplaint(newcomplaint.value)" class="close">OK</button>
         </div>
     </div>
 
     <div class="container">
-        <div *ngIf="!messages.length">
+        <div *ngIf="!_hasData">
             <i>{{loading_text}}</i>
         </div>
-        <div *ngFor="let msg of messages, let i = index">
+        <div *ngFor="let msg of messages | async, let i = index">
             <div class="bubble">
-                <span class="owner">{{msg.value.user?.displayName}}</span>
+                <span class="owner">{{msg.user?.displayName}}</span>
                 <div class="text">
-                    <p>{{msg.value.text}}</p>
+                    <p>{{msg.text}}</p>
                 </div>
                 <div class="timestamp">
-                    {{msg.value.time | date:'mediumDate'}}
+                    {{msg.time | date:'mediumDate'}}
                 </div>
+
                 <div class="actions x-nav">
-                    <a (click)="fav(msg.key, msg.value.like_count); false" class="fav">💚</a>{{msg.value.like_count}}
-                    <a class="comments-btn" (click)="showComments(i, msg.value.like_count)">Comments ({{msg.comments.length}})
+                    <a (click)="fav(msg.$key, msg.like_count); false" class="fav">💚</a>{{msg.like_count}}
+                    <a class="comments-btn" (click)="showComments(i, msg.$key)">Comments ({{msg.comment_count}})
                 </a>
                 </div>
                 <div *ngIf="i === msgindex" class="section-comment">
                     <hr>
-                    <input type="text" #newcomment placeholder="Type your comment..." (keyup.enter)="addComment(msg.key, newcomment.value); newcomment.value=''">
+                    <input type="text" #newcomment placeholder="Type your comment..." (keyup.enter)="addComment(msg.$key, newcomment.value, msg.comment_count); newcomment.value=''">
                     <ul class="comments">
-                        <li *ngFor="let comment of msg.comments">
+                        <li *ngFor="let comment of comments | async">
                             <p><span class="owner"><small>{{comment.user?.displayName}}</small></span> {{comment.comment}}</p>
                         </li>
                     </ul>
                 </div>
-            </div>
 
-            <!--div class="speaker">
-            <img src="assets/speaker.jpg" height="50px">
-        </div-->
+            </div>
         </div>
     </div>
 </div>
