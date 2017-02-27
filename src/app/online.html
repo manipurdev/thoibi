@@ -1,12 +1,12 @@
 <style>
-    .chatlist{
+    .chatlist {
         display: flex;
         flex-direction: column;
         border: 1px solid slategrey;
         height: auto;
+        min-width: 10em;
         top: 8em;
         position: absolute;
-        max-width: 200px;
         font-family: Arial, Helvetica, sans-serif;
         font-size: 10px;
         padding: 2px 6px;
@@ -14,10 +14,7 @@
 </style>
 
 <div class="chatlist">
-    <div>
-        😎&nbsp; Ronjan 
-    </div>
-    <div>
-        😎 Tersiay 
+    <div *ngFor="let user of users | async">
+        😎&nbsp; {{user.displayName}} {{ user.lastOnline | date:'medium'}}
     </div>
 </div>

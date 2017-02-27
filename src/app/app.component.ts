@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { initializeApp, database, app, auth } from 'firebase';
 import { AngularFire, FirebaseListObservable } from 'angularfire2';
 
@@ -54,8 +54,19 @@ export class AppComponent implements OnInit {
     if (lastuser) {
       this._user = JSON.parse(lastuser);
       this._isAuthenticated = true;
-      console.log(this._user['uid']);
+      // console.log('uid')
+      // console.log(this._user);
+      this.updateOnline()
     }
+  }
+  updateOnline() {
+    setInterval(() => {
+      if (this._isAuthenticated) {
+        let lastonline = Date.now();
+        console.log(lastonline)
+        this.af.database.list('people/thoibi_last_log').$ref.ref.child(this._user.uid).set({displayName: this._user.displayName,lastOnline:Date.now()});
+      }
+    }, 1000 * 60 * 1) //1 mins interval
   }
   loadComplaints() {
     this._hasData = false;
@@ -184,17 +195,16 @@ export class AppComponent implements OnInit {
     // console.log(JSON.parse(user))
     // return;
     if (!this._isAuthenticated) { //Sign out, to sign in
-      this.signwithcookie();
-      if (!this._isAuthenticated)
-        auth().signInWithPopup(new auth.GoogleAuthProvider())
-          .then((res) => {
-            this._isAuthenticated = true;
-            this._user = auth().currentUser.toJSON();
-            this._username = this._user.displayName;
-            // console.log(this._user)
-            // this.loadComplaints();
-            localStorage.setItem("user", JSON.stringify(this._user));
-          });
+      auth().signInWithPopup(new auth.GoogleAuthProvider())
+        .then((res) => {
+          this._isAuthenticated = true;
+          this._user = auth().currentUser.toJSON();
+          this._username = this._user.displayName;
+          // console.log(this._user)
+          // this.loadComplaints();
+          localStorage.setItem("user", JSON.stringify(this._user));
+          this.updateOnline()
+        });
     }
     else {
       auth().signOut().then(res => {
@@ -206,4 +216,18 @@ export class AppComponent implements OnInit {
       });
     }
   }
+}
+
+@Component({
+  selector: 'online',
+  templateUrl: './online.html'
+})
+export class Online implements OnInit {
+  // @Input('user') user;
+  constructor(private af: AngularFire) { }
+  users: FirebaseListObservable<any>;
+  ngOnInit() {
+    this.users = this.af.database.list('people/thoibi_last_log');
+  }
+
 }

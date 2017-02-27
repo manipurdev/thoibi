@@ -3,7 +3,8 @@ import { NgModule, enableProdMode } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 
-import { AppComponent } from './app.component';
+import { AppComponent, Online } from './app.component';
+
 import { AngularFireModule } from 'angularfire2';
 
 enableProdMode();
@@ -18,7 +19,7 @@ const firebaseConfig = {
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent, Online
   ],
   imports: [
     BrowserModule,

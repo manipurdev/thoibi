@@ -10,11 +10,12 @@
     .content {
         margin: auto;
         width: 100%;
+        display: flex;
     }
     
     .container {
         display: flex;
-        width: 100%;
+        width: 90%;
         padding: 0px 1em;
         height: 90%;
         margin: auto;
@@ -210,7 +211,6 @@
     }
 </style>
 <div class="content">
-
     <div id="myModal" class="modal" *ngIf="!_isAuthenticated && _ifNewComplaint && false">
         <div class="modal-content">
             <h4>Enter passcode</h4>
@@ -237,7 +237,7 @@
             <button (click)="addComplaint(newcomplaint.value)" class="close">OK</button>
         </div>
     </div>
-
+    <online *ngIf="_user?.uid== 'HfyO8rWnobe8qL6AKH6zbWXECst1'" style="top:10em; position: absolute"></online>
     <div class="container">
         <div *ngIf="!_hasData">
             <i>{{loading_text}}</i>
