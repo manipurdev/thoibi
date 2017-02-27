@@ -98,9 +98,10 @@ export class AppComponent implements OnInit {
     //   // console.log(this.messages);
     // });
   }
-
-  showComments(key: any) {
+  msgindex: number
+  showComments(i: number, key: any) {
     // console.log(index);
+    this.msgindex = i;
     this.comments = this.af.database.list('people/thoibi/' + key + '/comments')
     this.af.database.list('people/thoibi/' + key).$ref.ref.child('unread_count').set(0);
     // this.comments.subscribe((values) => {

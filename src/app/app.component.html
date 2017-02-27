@@ -256,7 +256,7 @@
 
                 <div class="actions x-nav">
                     <a (click)="fav(msg.$key, msg.like_count); false" class="fav">💚</a>{{msg.like_count}}
-                    <a class="comments-btn" (click)="showComments(msg.$key)">Comments ({{msg.comment_count}}) 
+                    <a class="comments-btn" (click)="showComments(i, msg.$key)">Comments ({{msg.comment_count}}) 
                         <span style="background:yellowgreen; box-shadow: 1px 1px 3px darkgreen; border-radius: 10%; padding: 2px;" *ngIf="msg.user?.uid == _user?.uid && msg.unread_count > 0">new({{msg.unread_count}})</span>
                 </a>
                 </div>
