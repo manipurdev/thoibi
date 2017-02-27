@@ -33,11 +33,24 @@ export class AppComponent implements OnInit {
 
   }
   ngOnInit() {
+
     // initializeApp(config);
     // if (!this._isAuthenticated)
     // this.signin();
     // return;
     this.loadComplaints();
+    // if(typeof(Storage) !== "undefined"){
+    //   console.log('cookie!!')
+    // }
+    // else{
+    //   console.log('no cookies!')
+    // }
+    let lastuser = localStorage.getItem("user");
+    
+    if (lastuser) {
+      this._user = JSON.parse(lastuser);
+      this._isAuthenticated = true;
+    }
 
   }
   loadComplaints() {
@@ -184,6 +197,10 @@ export class AppComponent implements OnInit {
       this._isAuthenticated = true;
   }
   signin() {
+    // localStorage.setItem(name, JSON.stringify({user: 'ronjan'}));
+    // let user = localStorage.getItem(name)
+    // console.log(JSON.parse(user))
+    // return;
     if (!this._isAuthenticated)
       auth().signInWithPopup(new auth.GoogleAuthProvider())
         .then((res) => {
@@ -192,6 +209,7 @@ export class AppComponent implements OnInit {
           this._username = this._user.displayName;
           // console.log(this._user)
           // this.loadComplaints();
+          localStorage.setItem("user", JSON.stringify(this._user));
         });
     else
       auth().signOut().then(res => {
@@ -199,6 +217,7 @@ export class AppComponent implements OnInit {
         console.log("logged out successfully.")
         this._user = null;
         this._username = "Kannagi"
+        localStorage.removeItem("user");
       });
   }
 }

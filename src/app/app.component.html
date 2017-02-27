@@ -207,6 +207,7 @@
     }
 </style>
 <div class="content">
+
     <div id="myModal" class="modal" *ngIf="!_isAuthenticated && _ifNewComplaint && false">
         <div class="modal-content">
             <h4>Enter passcode</h4>
@@ -221,7 +222,7 @@
     </div>
     <div class="header">
         <header>
-            {{_username}} Gi Pendaba Fongdokfam! 👩🏻 🤦‍ 🙋‍
+            {{_user?.displayName}} Gi Pendaba Fongdokfam! 👩🏻 🤦‍ 🙋‍
             <div class="subtitle" (click)="signin(); "><b>{{_isAuthenticated? "Logout 😡": "Login 😉"}}</b> <span *ngIf="!_isAuthenticated"><i>&nbsp;Sign in to make posts</i></span></div>
         </header>
         <button (click)="toggleNewComplaint()" class="add" *ngIf="_isAuthenticated">+</button>
@@ -266,4 +267,5 @@
             </div>
         </div>
     </div>
+
 </div>
