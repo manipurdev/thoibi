@@ -186,7 +186,7 @@ export class AppComponent implements OnInit {
     this._ifNewComplaint = !this._ifNewComplaint;
   }
   authenticate(pass: number) {
-    if (pass == 125)
+    if (pass == 23325)
       this._isAuthenticated = true;
   }
   signin() {
