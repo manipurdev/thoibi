@@ -99,10 +99,8 @@ export class AppComponent implements OnInit {
     // });
   }
 
-  msgindex: number;
-  showComments(index: number, key: any) {
+  showComments(key: any) {
     // console.log(index);
-    this.msgindex = index;
     this.comments = this.af.database.list('people/thoibi/' + key + '/comments')
     this.af.database.list('people/thoibi/' + key).$ref.ref.child('unread_count').set(0);
     // this.comments.subscribe((values) => {
@@ -140,6 +138,9 @@ export class AppComponent implements OnInit {
     // database().ref('/people/thoibi/' + key).child('liked_by').push(this._user);
     this.af.database.object('/people/thoibi/' + key).$ref.child('liked_by').push(this._user);
   }
+  hide(key) {
+    this.af.database.object('/people/thoibi/' + key).$ref.child('hide').set(true);
+  }
   addComplaint(text: string) {
     if (!text.length)
       return
@@ -152,7 +153,8 @@ export class AppComponent implements OnInit {
       location: '',
       like_count: 0,
       comments: [],
-      unread_count: 0
+      unread_count: 0,
+      hide: null
     }
     this.af.database.object('/people').$ref.child('thoibi').push(msg).then((res) => {
       this._newcomplaint = null;
