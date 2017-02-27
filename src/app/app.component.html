@@ -251,12 +251,13 @@
 
                 <div class="actions x-nav">
                     <a (click)="fav(msg.$key, msg.like_count); false" class="fav">💚</a>{{msg.like_count}}
-                    <a class="comments-btn" (click)="showComments(i, msg.$key)">Comments ({{msg.comment_count}})
+                    <a class="comments-btn" (click)="showComments(i, msg.$key)">Comments ({{msg.comment_count}}) 
+                        <span style="background:yellowgreen; box-shadow: 1px 1px 3px darkgreen; border-radius: 10%; padding: 2px;" *ngIf="msg.user?.uid === _user?.uid && msg.unread_count > 0">new({{msg.unread_count}})</span>
                 </a>
                 </div>
                 <div *ngIf="i === msgindex" class="section-comment">
                     <hr>
-                    <input *ngIf="_isAuthenticated" type="text" #newcomment placeholder="Type your comment..." (keyup.enter)="addComment(msg.$key, newcomment.value, msg.comment_count); newcomment.value=''">
+                    <input *ngIf="_isAuthenticated" type="text" #newcomment placeholder="Type your comment..." (keyup.enter)="addComment(msg.$key, msg.user?.uid, newcomment.value, msg.comment_count, msg.unread_count); newcomment.value=''">
                     <ul class="comments">
                         <li *ngFor="let comment of comments | async">
                             <p><span class="owner"><small>{{comment.user?.displayName}}</small></span> {{comment.comment}}</p>

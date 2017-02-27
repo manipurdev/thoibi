@@ -45,13 +45,17 @@ export class AppComponent implements OnInit {
     // else{
     //   console.log('no cookies!')
     // }
+    this.signwithcookie();
+
+  }
+  signwithcookie() {
     let lastuser = localStorage.getItem("user");
-    
+
     if (lastuser) {
       this._user = JSON.parse(lastuser);
       this._isAuthenticated = true;
+      console.log(this._user['uid']);
     }
-
   }
   loadComplaints() {
     this._hasData = false;
@@ -94,58 +98,32 @@ export class AppComponent implements OnInit {
     //   // console.log(this.messages);
     // });
   }
-  /*messages = [
-    {
-      msgid: 1,
-      text: "Ei ngasi thawai yam nungaite1",
-      time: "4:15 AM, Feb 15, 2017",
-      location: "",
-      like_count: 10,
-      comments: [
-        "Karigi?", "Kamai tourino1"
-      ]
-    },
-    {
-      msgid: 2,
-      text: "Ei ngasi thawai yam nungaite2",
-      time: "4:15 AM, Feb 15, 2017",
-      location: "",
-      like_count: 10,
-      comments: [
-        "Karigi?", "Kamai tourino2"
-      ]
-    },
-    {
-      msgid: 3,
-      text: "Ei ngasi thawai yam nungaite3",
-      time: "4:15 AM, Feb 15, 2017",
-      location: "",
-      like_count: 10,
-      comments: [
-        "Karigi?", "Kamai tourino3"
-      ]
-    },
-  ]*/
+
   msgindex: number;
   showComments(index: number, key: any) {
     // console.log(index);
     this.msgindex = index;
     this.comments = this.af.database.list('people/thoibi/' + key + '/comments')
+    this.af.database.list('people/thoibi/' + key).$ref.ref.child('unread_count').set(0);
     // this.comments.subscribe((values) => {
     //   console.log(values);
     // })
   }
-  addComment(key, text: string, lastCount: number) {
+  addComment(key, uid: string, text: string, lastCount: number, unread_count: number) {
     // console.log(text);
     // this.messages[this.msgindex].comments.push().;
     // this.snap.
     let comment = {
       user: this._user,
-      comment: text
+      comment: text,
+      read_by_owner: false
     }
     console.log(key)
+    console.log(this._user['uid'] != uid)
     this.af.database.object('/people/thoibi/' + key).$ref.child('comments').push(comment);
     this.af.database.object('/people/thoibi/' + key).$ref.child('comment_count').set(lastCount + 1);
+    if (this._user['uid'] != uid)
+      this.af.database.object('/people/thoibi/' + key).$ref.child('unread_count').set(unread_count + 1);
     // database().ref('/people/thoibi/' + key).child('comments').push(comment)
   }
   fav(key, lastval: number) {
@@ -173,7 +151,8 @@ export class AppComponent implements OnInit {
       time: Date.now(),
       location: '',
       like_count: 0,
-      comments: []
+      comments: [],
+      unread_count: 0
     }
     this.af.database.object('/people').$ref.child('thoibi').push(msg).then((res) => {
       this._newcomplaint = null;
@@ -201,17 +180,20 @@ export class AppComponent implements OnInit {
     // let user = localStorage.getItem(name)
     // console.log(JSON.parse(user))
     // return;
-    if (!this._isAuthenticated)
-      auth().signInWithPopup(new auth.GoogleAuthProvider())
-        .then((res) => {
-          this._isAuthenticated = true;
-          this._user = auth().currentUser.toJSON();
-          this._username = this._user.displayName;
-          // console.log(this._user)
-          // this.loadComplaints();
-          localStorage.setItem("user", JSON.stringify(this._user));
-        });
-    else
+    if (!this._isAuthenticated) { //Sign out, to sign in
+      this.signwithcookie();
+      if (!this._isAuthenticated)
+        auth().signInWithPopup(new auth.GoogleAuthProvider())
+          .then((res) => {
+            this._isAuthenticated = true;
+            this._user = auth().currentUser.toJSON();
+            this._username = this._user.displayName;
+            // console.log(this._user)
+            // this.loadComplaints();
+            localStorage.setItem("user", JSON.stringify(this._user));
+          });
+    }
+    else {
       auth().signOut().then(res => {
         this._isAuthenticated = false;
         console.log("logged out successfully.")
@@ -219,5 +201,6 @@ export class AppComponent implements OnInit {
         this._username = "Kannagi"
         localStorage.removeItem("user");
       });
+    }
   }
 }
